@@ -1607,22 +1607,25 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
   function AimRuleIcon({ size = 16 }) {
     return h(
       "svg",
-      { width: size, height: size, viewBox: "0 0 64 64", "aria-hidden": true, style: { display: "block" } },
-      h("rect", { x: 2, y: 2, width: 60, height: 60, rx: 17, fill: "currentColor", opacity: 0.12 }),
-      h("circle", { cx: 32, cy: 12, r: 3.2, fill: "currentColor" }),
-      h("path", { d: "M32 15.5V21", fill: "none", stroke: "currentColor", strokeWidth: 3, strokeLinecap: "round" }),
-      h("path", {
-        d: "M32 21 L42 31 L32 41 L22 31 Z",
+      {
+        width: size,
+        height: size,
+        viewBox: "0 0 24 24",
+        "aria-hidden": true,
         fill: "none",
         stroke: "currentColor",
-        strokeWidth: 3,
+        strokeWidth: 1.9,
+        strokeLinecap: "round",
         strokeLinejoin: "round",
-        strokeLinecap: "round"
-      }),
-      h("path", { d: "M22 31 H15 V47", fill: "none", stroke: "currentColor", strokeWidth: 3, strokeLinecap: "round", strokeLinejoin: "round", opacity: 0.78 }),
-      h("path", { d: "M42 31 H49 V47", fill: "none", stroke: "currentColor", strokeWidth: 3, strokeLinecap: "round", strokeLinejoin: "round" }),
-      h("circle", { cx: 15, cy: 50, r: 2.6, fill: "currentColor", opacity: 0.78 }),
-      h("circle", { cx: 49, cy: 50, r: 2.6, fill: "currentColor" })
+        style: { display: "block", overflow: "visible" }
+      },
+      h("circle", { cx: 12, cy: 2.6, r: 1.3, fill: "currentColor", stroke: "none" }),
+      h("path", { d: "M12 4.2V6.2" }),
+      h("path", { d: "M12 6.2 16.4 10.6 12 15 7.6 10.6Z" }),
+      h("path", { d: "M7.6 10.6H4.6V16.4", opacity: 0.78 }),
+      h("path", { d: "M16.4 10.6H19.4V16.4" }),
+      h("circle", { cx: 4.6, cy: 17.5, r: 1.2, fill: "currentColor", stroke: "none", opacity: 0.78 }),
+      h("circle", { cx: 19.4, cy: 17.5, r: 1.2, fill: "currentColor", stroke: "none" })
     );
   }
   function AimRuleSidebarIcon({ size = 20 }) {
@@ -3626,7 +3629,7 @@ ${data2.text}`);
         h(
           "div",
           { className: "aimrule-brand" },
-          h("span", { className: "aimrule-logo" }, h(AimRuleIcon, { size: 16 })),
+          h("span", { className: "aimrule-logo" }, h(AimRuleIcon, { size: 18 })),
           h(
             "div",
             { className: "aimrule-title-wrap" },
@@ -5332,7 +5335,7 @@ ${content}`).join("");
           h(
             "div",
             { className: "aimrule-launcher-head" },
-            h("span", { className: "aimrule-launcher-mark" }, h(AimRuleIcon, { size: 18 })),
+            h("span", { className: "aimrule-launcher-mark" }, h(AimRuleIcon, { size: 20 })),
             h(
               "div",
               { className: "aimrule-launcher-heading" },
@@ -5373,7 +5376,7 @@ ${content}`).join("");
           "aria-label": "\u6253\u5F00\u6D41\u7A0B\u56FE\u8BBE\u8BA1",
           onClick: () => setOpen(true)
         },
-        h(AimRuleIcon, { size: 16 })
+        h(AimRuleIcon, { size: 22 })
       ),
       overlay
     );

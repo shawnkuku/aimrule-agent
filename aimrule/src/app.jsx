@@ -2048,7 +2048,7 @@ export default function AimRulePage(props) {
       h(
         'div',
         { className: 'aimrule-brand' },
-        h('span', { className: 'aimrule-logo' }, h(AimRuleIcon, { size: 16 })),
+        h('span', { className: 'aimrule-logo' }, h(AimRuleIcon, { size: 18 })),
         h(
           'div',
           { className: 'aimrule-title-wrap' },
@@ -3868,7 +3868,7 @@ export function AimRuleLauncher(props) {
               h(
                 'div',
                 { className: 'aimrule-launcher-head' },
-                h('span', { className: 'aimrule-launcher-mark' }, h(AimRuleIcon, { size: 18 })),
+                h('span', { className: 'aimrule-launcher-mark' }, h(AimRuleIcon, { size: 20 })),
                 h(
                   'div',
                   { className: 'aimrule-launcher-heading' },
@@ -3911,7 +3911,7 @@ export function AimRuleLauncher(props) {
         'aria-label': '打开流程图设计',
         onClick: () => setOpen(true),
       },
-      h(AimRuleIcon, { size: 16 }),
+      h(AimRuleIcon, { size: 22 }),
     ),
     overlay,
   )
