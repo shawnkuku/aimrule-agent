@@ -1,6 +1,6 @@
 {
   "name": "@aimrule/dsh-plugin-flow",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "type": "module",
   "description": "AimRule — human-in-the-loop business rule elaboration workbench with a nested rule canvas.",
   "license": "AGPL-3.0-or-later",
@@ -53,7 +53,6 @@
       "platform": "web",
       "immediately": true,
       "inject": [
-        "@deepseek-ai/dsh-client-ui-sidebar",
         "@deepseek-ai/dsh-client-ui-conversation"
       ]
     }

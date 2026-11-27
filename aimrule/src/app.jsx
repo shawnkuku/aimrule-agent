@@ -3,8 +3,7 @@ import { buildExports } from '../shared/export.js'
 import { generateCases, runCase } from '../shared/evaluate.js'
 import { NODE_W, NODE_H, MIN_K, MAX_K, TYPE_META, TYPE_ORDER, uid, posOf, scopeOf, scopeNodes, layoutState, hasMissingPositions, pathOf, edgePath, defaultData, demoDoc, formatBytes, buildWorkspaceTree, filterWorkspaceTree, countTreeFiles, nodeContextText, baseName } from './flow-model.js'
 import { CSS } from './styles.js'
-import { AimRuleIcon, AimRuleSidebarIcon, NodeCard, ProjectPicker } from './components.jsx'
-export { AimRuleSidebarIcon } from './components.jsx'
+import { AimRuleIcon, NodeCard, ProjectPicker } from './components.jsx'
 
 /* ------------------------------------------------------------------ utils */
 
@@ -4103,17 +4102,6 @@ export function createPlugin() {
                 }
               },
             }),
-        ),
-      )
-      ctx.slots.inject('sidebar.panellist', () =>
-        ctx.slots.register(
-          {
-            name: 'sidebar.panellist',
-            id: 'aimrule',
-            order: 30,
-            label: 'AimRule',
-          },
-          AimRuleSidebarIcon,
         ),
       )
       ctx.slots.inject('conversation.input.left', () =>

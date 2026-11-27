@@ -26,10 +26,6 @@ export function AimRuleIcon({ size = 16 }) {
   )
 }
 
-export function AimRuleSidebarIcon({ size = 20 }) {
-  return AimRuleIcon({ size })
-}
-
 export function NodeCard({ node, selected, connectTarget, childCount, onMouseDown, onDoubleClick, onConnectStart, onConnectEnd }) {
   const meta = TYPE_META[node.type] || TYPE_META.action
   const data = node.data || {}

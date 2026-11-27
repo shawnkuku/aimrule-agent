@@ -1654,9 +1654,6 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
       h("circle", { cx: 19.4, cy: 17.5, r: 1.2, fill: "currentColor", stroke: "none" })
     );
   }
-  function AimRuleSidebarIcon({ size = 20 }) {
-    return AimRuleIcon({ size });
-  }
   function NodeCard({ node, selected, connectTarget, childCount, onMouseDown, onDoubleClick, onConnectStart, onConnectEnd }) {
     const meta = TYPE_META[node.type] || TYPE_META.action;
     const data = node.data || {};
@@ -5582,18 +5579,6 @@ ${content}`).join("");
                 }
               }
             })
-          )
-        );
-        ctx.slots.inject(
-          "sidebar.panellist",
-          () => ctx.slots.register(
-            {
-              name: "sidebar.panellist",
-              id: "aimrule",
-              order: 30,
-              label: "AimRule"
-            },
-            AimRuleSidebarIcon
           )
         );
         ctx.slots.inject(

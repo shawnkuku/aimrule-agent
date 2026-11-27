@@ -19,9 +19,9 @@ flowchart — then export it as engineering artifacts.
 
 ### Open it
 
-- **Sidebar / main panel** — the full AimRule workbench.
-- **Chat composer** — the AimRule icon next to `+` opens the same workbench in a
-  modal bound to the current session and workspace.
+**Chat composer** — the AimRule icon next to `+` opens the full workbench in a
+modal bound to the current session and workspace. AimRule no longer adds a
+sidebar entry.
 
 ### Quick start
 
@@ -124,9 +124,8 @@ The UI uses the Harness theme tokens, so it follows light and dark mode.
 
 ### 从哪里打开
 
-- **侧栏 / 主面板**：完整的 AimRule 工作台。
-- **聊天输入框**：点 `+` 旁的 AimRule 图标，会在弹层里打开同一个工作台，
-  自动绑定当前会话和会话所在的工作区。
+**聊天输入框**：点 `+` 旁的 AimRule 图标，会在弹层里打开完整工作台，
+自动绑定当前会话和会话所在的工作区。AimRule 不再添加侧栏入口。
 
 ### 快速开始
 
