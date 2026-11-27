@@ -4,7 +4,7 @@ import { CSS } from './styles.js'
 import { createPlugin } from './app.jsx'
 
 window.__ModuleLoader__.load({
-  id: '@local/aimrule',
+  id: '@aimrule/agent',
   factory(require) {
     const React = require('react')
     setReact(React)

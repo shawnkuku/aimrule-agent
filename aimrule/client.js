@@ -5439,7 +5439,7 @@ ${content}`).join("");
 
   // src/entry.jsx
   window.__ModuleLoader__.load({
-    id: "@local/aimrule",
+    id: "@aimrule/agent",
     factory(require2) {
       const React = require2("react");
       setReact(React);

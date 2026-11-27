@@ -1,4 +1,4 @@
 - insert:
     - id: aimrule
-      name: '@local/aimrule'
+      name: '@aimrule/agent'
       config: {}

@@ -80,7 +80,7 @@ The UI labels are Chinese; this guide keeps them so they are easy to match.
 
 ### Install
 
-- Install the release tarball (`dist/local-aimrule-<version>.tgz`) with the DSH
+- Install the release tarball (`dist/aimrule-agent-<version>.tgz`) with the DSH
   plugin manager, or enable the `aimrule` bundle in your profile, then refresh.
 - LibreOffice is optional and only needed for PDF / legacy Office import.
   Scanned PDFs and images need OCR.
@@ -172,7 +172,7 @@ The UI uses the Harness theme tokens, so it follows light and dark mode.
 
 ### 安装
 
-- 把发布 tarball（`dist/local-aimrule-<version>.tgz`）交给 DSH 插件管理器，
+- 把发布 tarball（`dist/aimrule-agent-<version>.tgz`）交给 DSH 插件管理器，
   或在 profile 里启用 `aimrule` bundle，然后刷新页面。
 - LibreOffice 是可选的，只在导入 PDF / 旧版 Office 时需要。
   扫描版 PDF 和图片需要 OCR。

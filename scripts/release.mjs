@@ -117,7 +117,7 @@ const notes = [
   '',
   '## 产物',
   '',
-  `- \`dist/${tarball || `local-aimrule-${nextVersion}.tgz`}\`（npm pack）`,
+  `- \`dist/${tarball || `aimrule-agent-${nextVersion}.tgz`}\`（npm pack）`,
   `- \`dist/${zipFile}\`（插件目录 ZIP）`,
   '',
   '## 安装/发布',
