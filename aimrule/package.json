@@ -1,6 +1,6 @@
 {
   "name": "@local/aimrule",
-  "version": "0.9.19",
+  "version": "0.9.20",
   "private": true,
   "type": "module",
   "description": "AimRule — human-in-the-loop business rule elaboration workbench with a nested rule canvas.",
@@ -18,7 +18,10 @@
     "cordis.patch.yml",
     "locale/*.json",
     "icon.svg",
-    "README.md"
+    "README.md",
+    "LICENSE",
+    "NOTICE",
+    "TRADEMARK.md"
   ],
   "dsh": {
     "bundle": {
@@ -32,5 +35,7 @@
         "@deepseek-ai/dsh-client-ui-conversation"
       ]
     }
-  }
+  },
+  "license": "AGPL-3.0-or-later",
+  "author": "AimRule contributors"
 }

@@ -1,3 +1,4 @@
+/*! AimRule | Copyright (c) 2025-2026 AimRule contributors | AGPL-3.0-or-later */
 (() => {
   // src/react.js
   var R = null;

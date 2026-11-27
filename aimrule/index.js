@@ -4,6 +4,9 @@
  * Owns the canvas document (a nested rule graph persisted under the workspace),
  * the LLM extraction/repair pipeline with structural validation and bounded
  * retries, the HTTP surface the browser panel talks to, and the agent tools.
+ *
+ * Copyright (c) 2025-2026 AimRule contributors.
+ * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
 import { execFile } from 'node:child_process'
@@ -930,7 +933,7 @@ export function apply(ctx, config = {}) {
         const project = url.searchParams.get('project') || ''
         const flow = url.searchParams.get('flow') || ''
         if (path === 'health' && req.method === 'GET') {
-          sendJson(res, 200, { ok: true, name: 'aimrule', version: '0.9.19', dir: globalDir })
+          sendJson(res, 200, { ok: true, name: 'aimrule', version: '0.9.20', dir: globalDir })
           return
         }
         if (path === 'state' && req.method === 'GET') {

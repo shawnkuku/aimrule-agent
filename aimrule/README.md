@@ -195,3 +195,41 @@ node release.mjs patch --push  # 同时推送到远端
 ```
 
 界面使用 Harness 的主题 token，自动跟随亮色/暗色主题。
+
+---
+
+## License / 许可
+
+**Code:** [AGPL-3.0-or-later](LICENSE). Copyright (c) 2025-2026 AimRule contributors.
+
+**代码：** [AGPL-3.0-or-later](LICENSE)，版权所有 (c) 2025-2026 AimRule contributors。
+
+- You may use, modify, and distribute the code, and offer it over a network.
+  If you distribute a modified version or make it available as a network
+  service, you must offer the complete corresponding source under
+  AGPL-3.0 and keep the copyright/license notices.
+- AGPL is a strong open-source copyleft license, but it does **not** forbid
+  copying. It forbids turning the code into a closed-source product without
+  sharing the source.
+- The AimRule name and logo are **not** covered by the code license. Modified
+  public forks must use a different name and logo and must not imply
+  endorsement. See [TRADEMARK.md](TRADEMARK.md).
+- Closed-source or commercial use needs a separate commercial license; contact
+  the maintainer through the repository.
+- Your flow data and exported artifacts remain yours.
+- By contributing, you agree to license your contribution under
+  AGPL-3.0-or-later. Maintainers who plan to sell commercial exceptions should
+  require a CLA from contributors.
+- This is not legal advice; consult a lawyer for your situation.
+
+- 你可以使用、修改、分发代码，也可以通过网络提供服务。修改后分发，或作为
+  网络服务提供时，必须按 AGPL-3.0 提供完整对应源码，并保留版权/许可声明。
+- AGPL 是强 copyleft 开源协议，但它**不禁止复制**；它禁止的是把代码改成
+  闭源产品却不公开源码。
+- AimRule 名称和图标**不在**代码许可范围内。修改后的公开分支必须换名换标，
+  不得暗示官方认可。见 [TRADEMARK.md](TRADEMARK.md)。
+- 闭源或商业使用需单独商业许可，请通过仓库联系维护者。
+- 画布数据和导出产物归你所有。
+- 提交贡献即表示同意按 AGPL-3.0-or-later 授权你的贡献。计划销售商业例外
+  的维护者，应要求贡献者签署 CLA。
+- 本节不构成法律意见，具体情况请咨询律师。

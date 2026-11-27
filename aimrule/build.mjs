@@ -24,6 +24,7 @@ await esbuild.build({
   jsxFactory: 'h',
   jsxFragment: 'Fragment',
   legalComments: 'none',
+  banner: { js: '/*! AimRule | Copyright (c) 2025-2026 AimRule contributors | AGPL-3.0-or-later */' },
   logLevel: 'info',
 })
 
