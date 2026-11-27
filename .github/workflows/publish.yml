@@ -22,7 +22,7 @@ jobs:
 
       - name: Verify package and tag
         run: |
-          node -e "const p=require('./aimrule/package.json'); if(p.private) throw new Error('package is private'); if(p.name!=='@aimrule/agent') throw new Error('unexpected package name: '+p.name); console.log('Publishing', p.name, p.version)"
+          node -e "const p=require('./aimrule/package.json'); if(p.private) throw new Error('package is private'); if(p.name!=='@aimrule/dsh-plugin-flow') throw new Error('unexpected package name: '+p.name); console.log('Publishing', p.name, p.version)"
           VERSION=$(node -p "require('./aimrule/package.json').version")
           if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref_name }}" != "v$VERSION" ]; then
             echo "Tag ${{ github.ref_name }} does not match package version v$VERSION" >&2

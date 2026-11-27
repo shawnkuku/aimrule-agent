@@ -933,7 +933,7 @@ export function apply(ctx, config = {}) {
         const project = url.searchParams.get('project') || ''
         const flow = url.searchParams.get('flow') || ''
         if (path === 'health' && req.method === 'GET') {
-          sendJson(res, 200, { ok: true, name: 'aimrule', version: '1.0.2', dir: globalDir })
+          sendJson(res, 200, { ok: true, name: 'aimrule', version: '1.1.0', dir: globalDir })
           return
         }
         if (path === 'state' && req.method === 'GET') {

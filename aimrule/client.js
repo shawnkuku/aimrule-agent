@@ -617,6 +617,31 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
 .aimrule-modal-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:.5px solid var(--aim-line);flex:none}
 .aimrule-modal-head h2{font-size:14px;margin:0;font-weight:600;flex:1}
 .aimrule-modal-body{padding:16px 18px;overflow:auto;display:flex;flex-direction:column;gap:12px;min-height:0}
+.aimrule-history-btn{width:26px;height:26px;flex:none;display:inline-flex;align-items:center;justify-content:center;padding:0;border:.5px solid var(--aim-line);border-radius:7px;background:var(--aim-layer);color:var(--aim-muted);cursor:pointer;margin-left:2px}
+.aimrule-history-btn:hover{background:var(--aim-hover);color:var(--aim-text)}
+.aimrule-history-btn:disabled{opacity:.4;cursor:default}
+.aimrule-history-count{font-size:11px;color:var(--aim-muted);flex:none}
+.aimrule-history-body{gap:12px}
+.aimrule-history-toolbar{display:flex;align-items:center;gap:12px;flex:none}
+.aimrule-history-summary{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.aimrule-history-summary b{font-size:12px;font-weight:600;color:var(--aim-text)}
+.aimrule-history-summary span{font-size:10.5px;color:var(--aim-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aimrule-history-list{display:flex;flex-direction:column;gap:8px}
+.aimrule-history-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border:.5px solid var(--aim-line);border-radius:12px;background:var(--aim-layer);min-width:0}
+.aimrule-history-row[data-current=true]{border-color:var(--aim-line-strong);box-shadow:inset 3px 0 0 var(--aim-accent)}
+.aimrule-history-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.aimrule-history-name{display:flex;align-items:center;gap:8px;min-width:0}
+.aimrule-history-title{min-width:0;display:flex;align-items:center}
+.aimrule-history-title b{font-size:12.5px;font-weight:600;color:var(--aim-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aimrule-history-current{flex:none;font-size:9.5px;font-weight:600;color:var(--aim-accent);background:var(--aim-accent-soft);border-radius:999px;padding:0 6px;line-height:16px}
+.aimrule-history-meta{font-size:10.5px;color:var(--aim-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aimrule-history-desc{font-size:10.5px;color:var(--aim-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aimrule-history-actions{display:flex;align-items:center;gap:4px;flex:none}
+.aimrule-history-actions .aimrule-btn{height:26px;padding:0 8px;font-size:11px}
+.aimrule-history-edit{display:flex;align-items:center;gap:6px;min-width:0;flex:1}
+.aimrule-history-edit .aimrule-input{height:28px;font-size:12px;min-width:120px}
+.aimrule-history-edit .aimrule-btn{height:26px;padding:0 8px;font-size:11px}
+@media (max-width: 720px){.aimrule-history-row{flex-direction:column;align-items:stretch}.aimrule-history-actions{justify-content:flex-end}}
 .aimrule-modal-foot{padding:12px 18px;border-top:.5px solid var(--aim-line);display:flex;align-items:center;gap:8px;justify-content:flex-end;flex:none}
 .aimrule-tabs{display:flex;gap:2px;border-bottom:.5px solid var(--aim-line);padding:0 12px;flex:none}
 .aimrule-tab{font:inherit;font-size:12px;border:0;background:transparent;color:var(--aim-muted);padding:9px 10px;cursor:pointer;border-bottom:2px solid transparent}
@@ -1849,6 +1874,9 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
     const [flows, setFlows] = useState([]);
     const [flowsLoading, setFlowsLoading] = useState(true);
     const [flowMenu, setFlowMenu] = useState(false);
+    const [historyEditId, setHistoryEditId] = useState("");
+    const [historyEditName, setHistoryEditName] = useState("");
+    const [historyBusy, setHistoryBusy] = useState(false);
     const [moreMenu, setMoreMenu] = useState(false);
     const [addMenu, setAddMenu] = useState(false);
     const [modules, setModules] = useState([]);
@@ -2964,6 +2992,85 @@ ${data2.text}`);
         setBusy("");
       }
     }, [busy, flowId, flows.length, notify, project]);
+    const openHistory = useCallback(() => {
+      setFlowMenu(false);
+      setHistoryEditId("");
+      setHistoryEditName("");
+      setModal("history");
+      request(`/aimrule/api/flows${workspaceQuery}`, { method: "GET" }).then((data) => {
+        if (Array.isArray(data.flows)) setFlows(data.flows);
+      }).catch(() => {
+      });
+    }, [workspaceQuery]);
+    const beginHistoryRename = useCallback((item) => {
+      setHistoryEditId(item.id);
+      setHistoryEditName(item.name || "");
+    }, []);
+    const renameFlowById = useCallback(
+      async (id, rawName) => {
+        const name = String(rawName || "").trim();
+        if (!name) {
+          notify("\u753B\u5E03\u540D\u79F0\u4E0D\u80FD\u4E3A\u7A7A", "error");
+          return;
+        }
+        if (historyBusy) return;
+        setHistoryBusy(true);
+        try {
+          if (id === flowId) {
+            mutate((state) => ({ ...state, project: { ...state.project, name } }), { history: false });
+            setFlows((current2) => current2.map((item) => item.id === id ? { ...item, name } : item));
+          } else {
+            const query = `?project=${encodeURIComponent(project || "")}&flow=${encodeURIComponent(id)}`;
+            const data = await request(`/aimrule/api/state${query}`, { method: "GET" });
+            const state = data.state;
+            const saved = await request(`/aimrule/api/state${query}`, {
+              method: "PUT",
+              body: JSON.stringify({ state: { ...state, project: { ...state.project, name } } })
+            });
+            if (Array.isArray(saved.flows)) setFlows(saved.flows);
+          }
+          setHistoryEditId("");
+          setHistoryEditName("");
+          notify("\u5DF2\u91CD\u547D\u540D\u753B\u5E03");
+        } catch (caught) {
+          notify(caught.message || "\u91CD\u547D\u540D\u5931\u8D25", "error");
+        } finally {
+          setHistoryBusy(false);
+        }
+      },
+      [flowId, historyBusy, mutate, notify, project]
+    );
+    const deleteFlowById = useCallback(
+      async (id) => {
+        if (historyBusy) return;
+        if (flows.length <= 1) {
+          notify("\u81F3\u5C11\u4FDD\u7559\u4E00\u4E2A\u753B\u5E03", "error");
+          return;
+        }
+        const item = flows.find((row) => row.id === id);
+        if (!window.confirm(`\u5220\u9664\u753B\u5E03\u300C${item && item.name || id}\u300D\uFF1F\u6B64\u64CD\u4F5C\u4E0D\u53EF\u64A4\u9500\u3002`)) return;
+        setHistoryBusy(true);
+        try {
+          const data = await request("/aimrule/api/flows/delete", {
+            method: "POST",
+            body: JSON.stringify({ project, flow: id })
+          });
+          const list = Array.isArray(data.flows) ? data.flows : [];
+          setFlows(list);
+          if (id === flowId) setFlowId(list.length > 0 ? list[0].id : "");
+          if (historyEditId === id) {
+            setHistoryEditId("");
+            setHistoryEditName("");
+          }
+          notify("\u5DF2\u5220\u9664\u753B\u5E03");
+        } catch (caught) {
+          notify(caught.message || "\u5220\u9664\u753B\u5E03\u5931\u8D25", "error");
+        } finally {
+          setHistoryBusy(false);
+        }
+      },
+      [flowId, flows, historyBusy, historyEditId, notify, project]
+    );
     const loadModules = useCallback(async (open) => {
       if (open) setModal("modules");
       setModulesLoading(true);
@@ -3566,6 +3673,18 @@ ${data2.text}`);
         h("span", { className: "aimrule-module-add" }, "\uFF0B")
       );
     };
+    const formatHistoryTime = (value) => {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "\u2014";
+      const now = /* @__PURE__ */ new Date();
+      const pad = (number) => String(number).padStart(2, "0");
+      const sameDay = date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth() && date.getDate() === now.getDate();
+      if (sameDay) return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+      return `${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    };
+    const historyFlows = [...flows].sort(
+      (a, b) => new Date(b.updatedAt || 0).getTime() - new Date(a.updatedAt || 0).getTime()
+    );
     const composerReady = genForm.text.trim().length > 0 || refNodes.length > 0 || selectedMessages.length > 0 || refPaths.length > 0 || uploads.length > 0;
     const nodeRect = (id) => {
       const position = positions.get(id) || { x: 0, y: 0 };
@@ -3611,6 +3730,32 @@ ${data2.text}`);
               },
               "\u5207\u6362",
               h("span", { className: "aimrule-title-more-chevron" }, "\u25BE")
+            ),
+            h(
+              "button",
+              {
+                className: "aimrule-history-btn",
+                title: "\u753B\u5E03\u5386\u53F2",
+                "aria-label": "\u753B\u5E03\u5386\u53F2",
+                onClick: openHistory,
+                disabled: flowsLoading
+              },
+              h(
+                "svg",
+                {
+                  width: 14,
+                  height: 14,
+                  viewBox: "0 0 24 24",
+                  fill: "none",
+                  stroke: "currentColor",
+                  strokeWidth: 1.8,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  "aria-hidden": true
+                },
+                h("circle", { cx: 12, cy: 12, r: 8 }),
+                h("path", { d: "M12 7v5l3 2" })
+              )
             ),
             flowMenu ? h(
               "div",
@@ -4790,6 +4935,145 @@ ${data2.text}`);
           )
         ) : null
       ),
+      modal === "history" ? h(
+        "div",
+        { className: "aimrule-overlay", onMouseDown: (event) => {
+          if (event.target === event.currentTarget) setModal(null);
+        } },
+        h(
+          "div",
+          { className: "aimrule-modal aimrule-history-modal" },
+          h(
+            "div",
+            { className: "aimrule-modal-head" },
+            h("h2", null, "\u753B\u5E03\u5386\u53F2"),
+            h("span", { className: "aimrule-history-count" }, `${flows.length} \u5F20`),
+            h("button", { className: "aimrule-btn", "data-kind": "ghost", onClick: () => setModal(null) }, "\u2715")
+          ),
+          h(
+            "div",
+            { className: "aimrule-modal-body aimrule-history-body" },
+            h(
+              "div",
+              { className: "aimrule-history-toolbar" },
+              h(
+                "div",
+                { className: "aimrule-history-summary" },
+                h("b", null, project ? baseName(project) : "\u5168\u5C40\u5DE5\u4F5C\u533A"),
+                h("span", null, `${flows.length} \u5F20\u753B\u5E03 \xB7 \u5F53\u524D\u300C${current.project.name || "\u672A\u547D\u540D"}\u300D`)
+              ),
+              h(
+                "button",
+                {
+                  className: "aimrule-btn",
+                  "data-kind": "primary",
+                  disabled: busy === "flow",
+                  onClick: async () => {
+                    await createFlow();
+                    setModal(null);
+                  }
+                },
+                "\uFF0B \u65B0\u5EFA\u753B\u5E03"
+              )
+            ),
+            historyFlows.length === 0 ? h("p", { className: "aimrule-hint" }, "\u8FD9\u4E2A\u5DE5\u4F5C\u533A\u8FD8\u6CA1\u6709\u753B\u5E03\u3002") : h(
+              "div",
+              { className: "aimrule-history-list" },
+              ...historyFlows.map(
+                (item) => h(
+                  "div",
+                  { key: item.id, className: "aimrule-history-row", "data-current": item.id === flowId },
+                  h(
+                    "div",
+                    { className: "aimrule-history-main" },
+                    h(
+                      "div",
+                      { className: "aimrule-history-name" },
+                      historyEditId === item.id ? h(
+                        "div",
+                        { className: "aimrule-history-edit" },
+                        h("input", {
+                          className: "aimrule-input",
+                          value: historyEditName,
+                          autoFocus: true,
+                          onChange: (event) => setHistoryEditName(event.target.value),
+                          onKeyDown: (event) => {
+                            if (event.key === "Enter") {
+                              event.preventDefault();
+                              renameFlowById(item.id, historyEditName);
+                            } else if (event.key === "Escape") {
+                              setHistoryEditId("");
+                              setHistoryEditName("");
+                            }
+                          }
+                        }),
+                        h("button", { className: "aimrule-btn", disabled: historyBusy, onClick: () => renameFlowById(item.id, historyEditName) }, "\u4FDD\u5B58"),
+                        h("button", { className: "aimrule-btn", "data-kind": "ghost", onClick: () => {
+                          setHistoryEditId("");
+                          setHistoryEditName("");
+                        } }, "\u53D6\u6D88")
+                      ) : h(
+                        "span",
+                        { className: "aimrule-history-title", title: item.name || item.id },
+                        h("b", null, item.name || "\u672A\u547D\u540D\u753B\u5E03")
+                      ),
+                      item.id === flowId ? h("span", { className: "aimrule-history-current" }, "\u5F53\u524D") : null
+                    ),
+                    h(
+                      "span",
+                      { className: "aimrule-history-meta" },
+                      `${formatHistoryTime(item.updatedAt)} \xB7 ${item.nodes} \u8282\u70B9 \xB7 ${item.edges} \u8FDE\u7EBF${item.modules ? ` \xB7 ${item.modules} \u6A21\u5757` : ""}`
+                    ),
+                    item.description ? h("span", { className: "aimrule-history-desc" }, item.description) : null
+                  ),
+                  h(
+                    "div",
+                    { className: "aimrule-history-actions" },
+                    item.id === flowId ? null : h(
+                      "button",
+                      {
+                        className: "aimrule-btn",
+                        onClick: () => {
+                          setFlowId(item.id);
+                          setModal(null);
+                        }
+                      },
+                      "\u6253\u5F00"
+                    ),
+                    h(
+                      "button",
+                      {
+                        className: "aimrule-btn",
+                        "data-kind": "ghost",
+                        disabled: historyBusy,
+                        onClick: () => beginHistoryRename(item)
+                      },
+                      "\u91CD\u547D\u540D"
+                    ),
+                    h(
+                      "button",
+                      {
+                        className: "aimrule-btn",
+                        "data-kind": "ghost",
+                        disabled: historyBusy || flows.length <= 1,
+                        style: { color: "var(--dsw-alias-state-error-primary)" },
+                        onClick: () => deleteFlowById(item.id)
+                      },
+                      "\u5220\u9664"
+                    )
+                  )
+                )
+              )
+            )
+          ),
+          h(
+            "div",
+            { className: "aimrule-modal-foot" },
+            h("button", { className: "aimrule-btn", onClick: () => setModal("export") }, "\u5BFC\u51FA\u5F53\u524D\u753B\u5E03"),
+            h("button", { className: "aimrule-btn", onClick: () => setModal(null) }, "\u5173\u95ED")
+          )
+        )
+      ) : null,
       modal === "export" ? h(
         "div",
         { className: "aimrule-overlay", onMouseDown: (event) => {
@@ -5329,7 +5613,7 @@ ${content}`).join("");
 
   // src/entry.jsx
   window.__ModuleLoader__.load({
-    id: "@aimrule/agent",
+    id: "@aimrule/dsh-plugin-flow",
     factory(require2) {
       const React = require2("react");
       setReact(React);

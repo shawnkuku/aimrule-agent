@@ -42,6 +42,13 @@ flowchart — then export it as engineering artifacts.
 
 The UI labels are Chinese; this guide keeps them so they are easy to match.
 
+### Canvas history
+
+The clock button next to **切换** opens **画布历史** (canvas history). It lists
+every canvas in the workspace, most recently updated first, with time,
+node/edge/module counts, and the current marker. From there you can open,
+rename, delete, create a canvas, or export the current one.
+
 ### Modules
 
 - **▦ 模块** opens a quick picker. It searches module names, source flows, and the
@@ -80,9 +87,9 @@ The UI labels are Chinese; this guide keeps them so they are easy to match.
 
 ### Install
 
-- Install the release tarball (`dist/aimrule-agent-<version>.tgz`) with the DSH
+- Install the release tarball (`dist/aimrule-dsh-plugin-flow-<version>.tgz`) with the DSH
   plugin manager, or enable the `aimrule` bundle in your profile, then refresh.
-- Published package: `npm install @aimrule/agent` (after the first npm release).
+- Published package: `npm install @aimrule/dsh-plugin-flow` (after the first npm release).
 - LibreOffice is optional and only needed for PDF / legacy Office import.
   Scanned PDFs and images need OCR.
 
@@ -137,6 +144,11 @@ The UI uses the Harness theme tokens, so it follows light and dark mode.
 - 方向键微调选中节点 1px（Shift = 10px）。
 - ⌘Z / ⇧⌘Z 撤销重做；Esc 关闭浮层，或返回上一层模块。
 
+### 画布历史
+
+**切换** 旁的时钟按钮打开 **画布历史**：按更新时间列出工作区全部画布，显示
+节点/连线/模块数量和当前标记；可以打开、重命名、删除、新建画布，或导出当前画布。
+
 ### 模块
 
 - **▦ 模块** 打开快速选择器，可搜模块名、来源流程图，以及模块内部的
@@ -173,9 +185,9 @@ The UI uses the Harness theme tokens, so it follows light and dark mode.
 
 ### 安装
 
-- 把发布 tarball（`dist/aimrule-agent-<version>.tgz`）交给 DSH 插件管理器，
+- 把发布 tarball（`dist/aimrule-dsh-plugin-flow-<version>.tgz`）交给 DSH 插件管理器，
   或在 profile 里启用 `aimrule` bundle，然后刷新页面。
-- 发布到 npm 后可直接 `npm install @aimrule/agent`。
+- 发布到 npm 后可直接 `npm install @aimrule/dsh-plugin-flow`。
 - LibreOffice 是可选的，只在导入 PDF / 旧版 Office 时需要。
   扫描版 PDF 和图片需要 OCR。
 

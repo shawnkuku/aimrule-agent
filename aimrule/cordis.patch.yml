@@ -1,4 +1,4 @@
 - insert:
     - id: aimrule
-      name: '@aimrule/agent'
+      name: '@aimrule/dsh-plugin-flow'
       config: {}

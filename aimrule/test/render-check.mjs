@@ -578,6 +578,23 @@ const casesAfterDelete = container.querySelectorAll('.aimrule-case').length
 console.log(`${casesBeforeDelete === 2 && casesAfterDelete === 1 ? 'PASS' : 'FAIL'} a test case can be deleted`)
 if (!(casesBeforeDelete === 2 && casesAfterDelete === 1)) failed += 1
 
+/* ------------------------------------------------------- canvas history */
+
+await React.act(async () => {
+  container.querySelector('.aimrule-history-btn').click()
+  await new Promise((resolve) => setTimeout(resolve, 40))
+})
+const historyRows = container.querySelectorAll('.aimrule-history-row').length
+const historyCurrent = container.querySelector('.aimrule-history-row[data-current=true]')
+const historyOk = historyRows === 2 && Boolean(historyCurrent && (historyCurrent.textContent || '').includes('当前'))
+await React.act(async () => {
+  const close = container.querySelector('.aimrule-modal-head .aimrule-btn')
+  if (close) close.click()
+})
+const historyClosed = !container.querySelector('.aimrule-history-row')
+console.log(`${historyOk && historyClosed ? 'PASS' : 'FAIL'} canvas history lists workspace flows`)
+if (!(historyOk && historyClosed)) failed += 1
+
 /* ------------------------------------------------- flows + module reuse */
 
 const flowTrigger = container.querySelector('.aimrule-title-more')

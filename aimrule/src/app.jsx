@@ -96,6 +96,9 @@ export default function AimRulePage(props) {
   const [flows, setFlows] = useState([])
   const [flowsLoading, setFlowsLoading] = useState(true)
   const [flowMenu, setFlowMenu] = useState(false)
+  const [historyEditId, setHistoryEditId] = useState('')
+  const [historyEditName, setHistoryEditName] = useState('')
+  const [historyBusy, setHistoryBusy] = useState(false)
   const [moreMenu, setMoreMenu] = useState(false)
   const [addMenu, setAddMenu] = useState(false)
   const [modules, setModules] = useState([])
@@ -1310,6 +1313,90 @@ export default function AimRulePage(props) {
     }
   }, [busy, flowId, flows.length, notify, project])
 
+  const openHistory = useCallback(() => {
+    setFlowMenu(false)
+    setHistoryEditId('')
+    setHistoryEditName('')
+    setModal('history')
+    request(`/aimrule/api/flows${workspaceQuery}`, { method: 'GET' })
+      .then((data) => {
+        if (Array.isArray(data.flows)) setFlows(data.flows)
+      })
+      .catch(() => {})
+  }, [workspaceQuery])
+
+  const beginHistoryRename = useCallback((item) => {
+    setHistoryEditId(item.id)
+    setHistoryEditName(item.name || '')
+  }, [])
+
+  const renameFlowById = useCallback(
+    async (id, rawName) => {
+      const name = String(rawName || '').trim()
+      if (!name) {
+        notify('画布名称不能为空', 'error')
+        return
+      }
+      if (historyBusy) return
+      setHistoryBusy(true)
+      try {
+        if (id === flowId) {
+          mutate((state) => ({ ...state, project: { ...state.project, name } }), { history: false })
+          setFlows((current) => current.map((item) => (item.id === id ? { ...item, name } : item)))
+        } else {
+          const query = `?project=${encodeURIComponent(project || '')}&flow=${encodeURIComponent(id)}`
+          const data = await request(`/aimrule/api/state${query}`, { method: 'GET' })
+          const state = data.state
+          const saved = await request(`/aimrule/api/state${query}`, {
+            method: 'PUT',
+            body: JSON.stringify({ state: { ...state, project: { ...state.project, name } } }),
+          })
+          if (Array.isArray(saved.flows)) setFlows(saved.flows)
+        }
+        setHistoryEditId('')
+        setHistoryEditName('')
+        notify('已重命名画布')
+      } catch (caught) {
+        notify(caught.message || '重命名失败', 'error')
+      } finally {
+        setHistoryBusy(false)
+      }
+    },
+    [flowId, historyBusy, mutate, notify, project],
+  )
+
+  const deleteFlowById = useCallback(
+    async (id) => {
+      if (historyBusy) return
+      if (flows.length <= 1) {
+        notify('至少保留一个画布', 'error')
+        return
+      }
+      const item = flows.find((row) => row.id === id)
+      if (!window.confirm(`删除画布「${(item && item.name) || id}」？此操作不可撤销。`)) return
+      setHistoryBusy(true)
+      try {
+        const data = await request('/aimrule/api/flows/delete', {
+          method: 'POST',
+          body: JSON.stringify({ project, flow: id }),
+        })
+        const list = Array.isArray(data.flows) ? data.flows : []
+        setFlows(list)
+        if (id === flowId) setFlowId(list.length > 0 ? list[0].id : '')
+        if (historyEditId === id) {
+          setHistoryEditId('')
+          setHistoryEditName('')
+        }
+        notify('已删除画布')
+      } catch (caught) {
+        notify(caught.message || '删除画布失败', 'error')
+      } finally {
+        setHistoryBusy(false)
+      }
+    },
+    [flowId, flows, historyBusy, historyEditId, notify, project],
+  )
+
   const loadModules = useCallback(async (open) => {
     if (open) setModal('modules')
     setModulesLoading(true)
@@ -1977,6 +2064,22 @@ export default function AimRulePage(props) {
     )
   }
 
+  const formatHistoryTime = (value) => {
+    const date = new Date(value)
+    if (Number.isNaN(date.getTime())) return '—'
+    const now = new Date()
+    const pad = (number) => String(number).padStart(2, '0')
+    const sameDay =
+      date.getFullYear() === now.getFullYear() &&
+      date.getMonth() === now.getMonth() &&
+      date.getDate() === now.getDate()
+    if (sameDay) return `${pad(date.getHours())}:${pad(date.getMinutes())}`
+    return `${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`
+  }
+  const historyFlows = [...flows].sort(
+    (a, b) => new Date(b.updatedAt || 0).getTime() - new Date(a.updatedAt || 0).getTime(),
+  )
+
   const composerReady = genForm.text.trim().length > 0 || refNodes.length > 0 || selectedMessages.length > 0 || refPaths.length > 0 || uploads.length > 0
 
   const nodeRect = (id) => {
@@ -2025,6 +2128,32 @@ export default function AimRulePage(props) {
             },
             '切换',
             h('span', { className: 'aimrule-title-more-chevron' }, '▾'),
+          ),
+          h(
+            'button',
+            {
+              className: 'aimrule-history-btn',
+              title: '画布历史',
+              'aria-label': '画布历史',
+              onClick: openHistory,
+              disabled: flowsLoading,
+            },
+            h(
+              'svg',
+              {
+                width: 14,
+                height: 14,
+                viewBox: '0 0 24 24',
+                fill: 'none',
+                stroke: 'currentColor',
+                strokeWidth: 1.8,
+                strokeLinecap: 'round',
+                strokeLinejoin: 'round',
+                'aria-hidden': true,
+              },
+              h('circle', { cx: 12, cy: 12, r: 8 }),
+              h('path', { d: 'M12 7v5l3 2' }),
+            ),
           ),
           flowMenu
             ? h(
@@ -3297,6 +3426,148 @@ export default function AimRulePage(props) {
           )
         : null,
     ),
+    modal === 'history'
+      ? h(
+          'div',
+          { className: 'aimrule-overlay', onMouseDown: (event) => { if (event.target === event.currentTarget) setModal(null) } },
+          h(
+            'div',
+            { className: 'aimrule-modal aimrule-history-modal' },
+            h(
+              'div',
+              { className: 'aimrule-modal-head' },
+              h('h2', null, '画布历史'),
+              h('span', { className: 'aimrule-history-count' }, `${flows.length} 张`),
+              h('button', { className: 'aimrule-btn', 'data-kind': 'ghost', onClick: () => setModal(null) }, '✕'),
+            ),
+            h(
+              'div',
+              { className: 'aimrule-modal-body aimrule-history-body' },
+              h(
+                'div',
+                { className: 'aimrule-history-toolbar' },
+                h(
+                  'div',
+                  { className: 'aimrule-history-summary' },
+                  h('b', null, project ? baseName(project) : '全局工作区'),
+                  h('span', null, `${flows.length} 张画布 · 当前「${current.project.name || '未命名'}」`),
+                ),
+                h(
+                  'button',
+                  {
+                    className: 'aimrule-btn',
+                    'data-kind': 'primary',
+                    disabled: busy === 'flow',
+                    onClick: async () => {
+                      await createFlow()
+                      setModal(null)
+                    },
+                  },
+                  '＋ 新建画布',
+                ),
+              ),
+              historyFlows.length === 0
+                ? h('p', { className: 'aimrule-hint' }, '这个工作区还没有画布。')
+                : h(
+                    'div',
+                    { className: 'aimrule-history-list' },
+                    ...historyFlows.map((item) =>
+                      h(
+                        'div',
+                        { key: item.id, className: 'aimrule-history-row', 'data-current': item.id === flowId },
+                        h(
+                          'div',
+                          { className: 'aimrule-history-main' },
+                          h(
+                            'div',
+                            { className: 'aimrule-history-name' },
+                            historyEditId === item.id
+                              ? h(
+                                  'div',
+                                  { className: 'aimrule-history-edit' },
+                                  h('input', {
+                                    className: 'aimrule-input',
+                                    value: historyEditName,
+                                    autoFocus: true,
+                                    onChange: (event) => setHistoryEditName(event.target.value),
+                                    onKeyDown: (event) => {
+                                      if (event.key === 'Enter') {
+                                        event.preventDefault()
+                                        renameFlowById(item.id, historyEditName)
+                                      } else if (event.key === 'Escape') {
+                                        setHistoryEditId('')
+                                        setHistoryEditName('')
+                                      }
+                                    },
+                                  }),
+                                  h('button', { className: 'aimrule-btn', disabled: historyBusy, onClick: () => renameFlowById(item.id, historyEditName) }, '保存'),
+                                  h('button', { className: 'aimrule-btn', 'data-kind': 'ghost', onClick: () => { setHistoryEditId(''); setHistoryEditName('') } }, '取消'),
+                                )
+                              : h(
+                                  'span',
+                                  { className: 'aimrule-history-title', title: item.name || item.id },
+                                  h('b', null, item.name || '未命名画布'),
+                                ),
+                            item.id === flowId ? h('span', { className: 'aimrule-history-current' }, '当前') : null,
+                          ),
+                          h(
+                            'span',
+                            { className: 'aimrule-history-meta' },
+                            `${formatHistoryTime(item.updatedAt)} · ${item.nodes} 节点 · ${item.edges} 连线${item.modules ? ` · ${item.modules} 模块` : ''}`,
+                          ),
+                          item.description ? h('span', { className: 'aimrule-history-desc' }, item.description) : null,
+                        ),
+                        h(
+                          'div',
+                          { className: 'aimrule-history-actions' },
+                          item.id === flowId
+                            ? null
+                            : h(
+                                'button',
+                                {
+                                  className: 'aimrule-btn',
+                                  onClick: () => {
+                                    setFlowId(item.id)
+                                    setModal(null)
+                                  },
+                                },
+                                '打开',
+                              ),
+                          h(
+                            'button',
+                            {
+                              className: 'aimrule-btn',
+                              'data-kind': 'ghost',
+                              disabled: historyBusy,
+                              onClick: () => beginHistoryRename(item),
+                            },
+                            '重命名',
+                          ),
+                          h(
+                            'button',
+                            {
+                              className: 'aimrule-btn',
+                              'data-kind': 'ghost',
+                              disabled: historyBusy || flows.length <= 1,
+                              style: { color: 'var(--dsw-alias-state-error-primary)' },
+                              onClick: () => deleteFlowById(item.id),
+                            },
+                            '删除',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+            ),
+            h(
+              'div',
+              { className: 'aimrule-modal-foot' },
+              h('button', { className: 'aimrule-btn', onClick: () => setModal('export') }, '导出当前画布'),
+              h('button', { className: 'aimrule-btn', onClick: () => setModal(null) }, '关闭'),
+            ),
+          ),
+        )
+      : null,
     modal === 'export'
       ? h(
           'div',

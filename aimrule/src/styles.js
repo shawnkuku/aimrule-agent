@@ -368,6 +368,31 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
 .aimrule-modal-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:.5px solid var(--aim-line);flex:none}
 .aimrule-modal-head h2{font-size:14px;margin:0;font-weight:600;flex:1}
 .aimrule-modal-body{padding:16px 18px;overflow:auto;display:flex;flex-direction:column;gap:12px;min-height:0}
+.aimrule-history-btn{width:26px;height:26px;flex:none;display:inline-flex;align-items:center;justify-content:center;padding:0;border:.5px solid var(--aim-line);border-radius:7px;background:var(--aim-layer);color:var(--aim-muted);cursor:pointer;margin-left:2px}
+.aimrule-history-btn:hover{background:var(--aim-hover);color:var(--aim-text)}
+.aimrule-history-btn:disabled{opacity:.4;cursor:default}
+.aimrule-history-count{font-size:11px;color:var(--aim-muted);flex:none}
+.aimrule-history-body{gap:12px}
+.aimrule-history-toolbar{display:flex;align-items:center;gap:12px;flex:none}
+.aimrule-history-summary{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.aimrule-history-summary b{font-size:12px;font-weight:600;color:var(--aim-text)}
+.aimrule-history-summary span{font-size:10.5px;color:var(--aim-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aimrule-history-list{display:flex;flex-direction:column;gap:8px}
+.aimrule-history-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border:.5px solid var(--aim-line);border-radius:12px;background:var(--aim-layer);min-width:0}
+.aimrule-history-row[data-current=true]{border-color:var(--aim-line-strong);box-shadow:inset 3px 0 0 var(--aim-accent)}
+.aimrule-history-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.aimrule-history-name{display:flex;align-items:center;gap:8px;min-width:0}
+.aimrule-history-title{min-width:0;display:flex;align-items:center}
+.aimrule-history-title b{font-size:12.5px;font-weight:600;color:var(--aim-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aimrule-history-current{flex:none;font-size:9.5px;font-weight:600;color:var(--aim-accent);background:var(--aim-accent-soft);border-radius:999px;padding:0 6px;line-height:16px}
+.aimrule-history-meta{font-size:10.5px;color:var(--aim-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aimrule-history-desc{font-size:10.5px;color:var(--aim-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aimrule-history-actions{display:flex;align-items:center;gap:4px;flex:none}
+.aimrule-history-actions .aimrule-btn{height:26px;padding:0 8px;font-size:11px}
+.aimrule-history-edit{display:flex;align-items:center;gap:6px;min-width:0;flex:1}
+.aimrule-history-edit .aimrule-input{height:28px;font-size:12px;min-width:120px}
+.aimrule-history-edit .aimrule-btn{height:26px;padding:0 8px;font-size:11px}
+@media (max-width: 720px){.aimrule-history-row{flex-direction:column;align-items:stretch}.aimrule-history-actions{justify-content:flex-end}}
 .aimrule-modal-foot{padding:12px 18px;border-top:.5px solid var(--aim-line);display:flex;align-items:center;gap:8px;justify-content:flex-end;flex:none}
 .aimrule-tabs{display:flex;gap:2px;border-bottom:.5px solid var(--aim-line);padding:0 12px;flex:none}
 .aimrule-tab{font:inherit;font-size:12px;border:0;background:transparent;color:var(--aim-muted);padding:9px 10px;cursor:pointer;border-bottom:2px solid transparent}
