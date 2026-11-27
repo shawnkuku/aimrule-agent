@@ -794,9 +794,16 @@ await React.act(async () => {
   const close = window.document.querySelector('.aimrule-launcher-close')
   if (close) close.click()
 })
+const launcherLockedWorkspace = launcher ? launcher.querySelector('.aimrule-workspace-static') : null
+const launcherHasPicker = launcher ? launcher.querySelector('.aimrule-workspace-trigger') : null
+const lockedWorkspaceOk = Boolean(
+  launcherLockedWorkspace &&
+    !launcherHasPicker &&
+    (launcherLockedWorkspace.textContent || '').includes('审批项目'),
+)
 const launcherClosed = !window.document.querySelector('.aimrule-launcher')
-console.log(`${launcherOpened && launcherClosed ? 'PASS' : 'FAIL'} composer launcher opens bound to the session workspace`)
-if (!(launcherOpened && launcherClosed)) failed += 1
+console.log(`${launcherOpened && lockedWorkspaceOk && launcherClosed ? 'PASS' : 'FAIL'} composer launcher opens bound to the session workspace`)
+if (!(launcherOpened && lockedWorkspaceOk && launcherClosed)) failed += 1
 launcherRoot.unmount()
 launcherContainer.remove()
 

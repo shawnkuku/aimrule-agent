@@ -20,12 +20,14 @@ flowchart — then export it as engineering artifacts.
 ### Open it
 
 **Chat composer** — the AimRule icon next to `+` opens the full workbench in a
-modal bound to the current session and workspace. AimRule no longer adds a
+modal bound to the current session and workspace. The workspace is fixed and
+shown as a locked label, so it cannot drift from the conversation; use the
+flow switcher for canvases inside that workspace. AimRule no longer adds a
 sidebar entry.
 
 ### Quick start
 
-1. Pick a workspace. The panel defaults to the most recently used session's workspace.
+1. Open from the chat composer. The workspace is fixed to the current session.
 2. Type a rule, or `+` to reference chat records, existing nodes/modules, workspace
    files/folders, or uploads.
 3. Press Enter. Review the graph and any open points in the banner above it.
@@ -125,11 +127,12 @@ The UI uses the Harness theme tokens, so it follows light and dark mode.
 ### 从哪里打开
 
 **聊天输入框**：点 `+` 旁的 AimRule 图标，会在弹层里打开完整工作台，
-自动绑定当前会话和会话所在的工作区。AimRule 不再添加侧栏入口。
+自动绑定当前会话和会话所在的工作区。工作区以锁定标签展示、不可切换，
+避免和会话上下文错位；要换画布用「切换」。AimRule 不再添加侧栏入口。
 
 ### 快速开始
 
-1. 选工作区。面板默认用最近使用会话的工作区。
+1. 从聊天输入框打开，工作区固定为当前会话所在工作区。
 2. 输入规则，或用 `+` 引用对话记录、画布节点/模块、工作区文件/文件夹、上传附件。
 3. 按 Enter 生成。先看画布，再看顶部条幅里的待确认点。
 4. 改节点，点 **测试** 跑用例，点 **导出** 拿工程产物。

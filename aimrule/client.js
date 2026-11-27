@@ -390,6 +390,9 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
 .aimrule-workspace-trigger:hover{color:var(--aim-text)}
 .aimrule-workspace-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:190px}
 .aimrule-workspace-menu{left:0;top:calc(100% + 8px);width:260px}
+.aimrule-workspace-static{display:inline-flex;align-items:center;gap:6px;color:var(--aim-muted);font-size:12px;padding:0 4px;max-width:230px;flex:none;white-space:nowrap}
+.aimrule-workspace-static .aimrule-workspace-name{max-width:190px}
+.aimrule-workspace-lock{flex:none;opacity:.7;color:var(--aim-muted)}
 .aimrule-flow-menu{position:absolute;left:0;top:calc(100% + 8px);width:252px;max-height:min(420px,70vh);overflow:auto;z-index:31;background:var(--aim-layer);border:.5px solid var(--aim-line-strong);border-radius:12px;box-shadow:0 18px 44px rgba(0,0,0,.30);padding:6px;display:flex;flex-direction:column;gap:2px}
 .aimrule-flow-menu.aimrule-more-menu{left:auto;right:0;width:200px;max-height:none}
 .aimrule-flow-mask{position:fixed;inset:0;z-index:30}
@@ -1857,9 +1860,12 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
       }
     });
     const projectHooks = props && typeof props.useWorkspaces === "function" && typeof props.useSessions === "function";
+    const lockProject = Boolean(props && props.lockProject);
     const defaultProject = props && typeof props.defaultProject === "string" ? props.defaultProject : "";
+    const lockedProjectLabel = props && typeof props.lockedProjectLabel === "string" ? props.lockedProjectLabel : "";
     const autoProjectRef = useRef("");
     const [project, setProject] = useState(() => {
+      if (lockProject) return defaultProject || "";
       if (defaultProject) return defaultProject;
       try {
         return window.localStorage.getItem("aimrule.project") || "";
@@ -1994,8 +2000,9 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
     useEffect(() => {
       if (!defaultProject || autoProjectRef.current === defaultProject) return;
       autoProjectRef.current = defaultProject;
-      chooseProject(defaultProject);
-    }, [chooseProject, defaultProject]);
+      if (lockProject) setProject(defaultProject);
+      else chooseProject(defaultProject);
+    }, [chooseProject, defaultProject, lockProject]);
     useEffect(() => {
       try {
         const raw = JSON.parse(window.localStorage.getItem(recentStorageKey) || "[]");
@@ -3809,7 +3816,31 @@ ${data2.text}`);
             h("span", { className: "aimrule-sync-label" }, syncState === "synced" ? "\u5DF2\u540C\u6B65" : syncState === "local" ? "\u4EC5\u672C\u5730" : "\u52A0\u8F7D\u4E2D\u2026")
           )
         ),
-        projectHooks ? h(ProjectPicker, {
+        projectHooks ? lockProject ? h(
+          "span",
+          {
+            className: "aimrule-workspace aimrule-workspace-static",
+            title: project ? `\u5DF2\u7ED1\u5B9A\u5F53\u524D\u4F1A\u8BDD\u5DE5\u4F5C\u533A\uFF1A${project}` : "\u5F53\u524D\u4F1A\u8BDD\u672A\u7ED1\u5B9A\u5DE5\u4F5C\u533A"
+          },
+          h(
+            "svg",
+            { width: 13, height: 13, viewBox: "0 0 16 16", "aria-hidden": true, style: { flex: "none" } },
+            h("path", {
+              d: "M1.5 3.5h4.2l1.2 1.4h7.6v7.6H1.5z",
+              fill: "none",
+              stroke: "currentColor",
+              strokeWidth: 1.2,
+              strokeLinejoin: "round"
+            })
+          ),
+          h("span", { className: "aimrule-workspace-name" }, lockedProjectLabel || (project ? baseName(project) : "\u5F53\u524D\u4F1A\u8BDD\u5DE5\u4F5C\u533A")),
+          h(
+            "svg",
+            { className: "aimrule-workspace-lock", width: 11, height: 11, viewBox: "0 0 24 24", "aria-hidden": true },
+            h("rect", { x: 5, y: 10, width: 14, height: 10, rx: 2, fill: "none", stroke: "currentColor", strokeWidth: 1.8 }),
+            h("path", { d: "M8 10V7a4 4 0 0 1 8 0v3", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round" })
+          )
+        ) : h(ProjectPicker, {
           useWorkspaces: props.useWorkspaces,
           useSessions: props.useSessions,
           value: project,
@@ -5533,7 +5564,9 @@ ${content}`).join("");
               useWorkspaces: props.useWorkspaces,
               sessionId,
               readCurrentSession: () => sessionId,
-              defaultProject: projectPath
+              defaultProject: projectPath,
+              lockProject: true,
+              lockedProjectLabel: workspaceLabel
             })
           )
         )

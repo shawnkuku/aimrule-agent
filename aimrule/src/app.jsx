@@ -81,9 +81,12 @@ export default function AimRulePage(props) {
     }
   })
   const projectHooks = props && typeof props.useWorkspaces === 'function' && typeof props.useSessions === 'function'
+  const lockProject = Boolean(props && props.lockProject)
   const defaultProject = props && typeof props.defaultProject === 'string' ? props.defaultProject : ''
+  const lockedProjectLabel = props && typeof props.lockedProjectLabel === 'string' ? props.lockedProjectLabel : ''
   const autoProjectRef = useRef('')
   const [project, setProject] = useState(() => {
+    if (lockProject) return defaultProject || ''
     if (defaultProject) return defaultProject
     try {
       return window.localStorage.getItem('aimrule.project') || ''
@@ -228,8 +231,9 @@ export default function AimRulePage(props) {
   useEffect(() => {
     if (!defaultProject || autoProjectRef.current === defaultProject) return
     autoProjectRef.current = defaultProject
-    chooseProject(defaultProject)
-  }, [chooseProject, defaultProject])
+    if (lockProject) setProject(defaultProject)
+    else chooseProject(defaultProject)
+  }, [chooseProject, defaultProject, lockProject])
 
   useEffect(() => {
     try {
@@ -2211,12 +2215,38 @@ export default function AimRulePage(props) {
         ),
       ),
       projectHooks
-        ? h(ProjectPicker, {
-            useWorkspaces: props.useWorkspaces,
-            useSessions: props.useSessions,
-            value: project,
-            onChange: chooseProject,
-          })
+        ? lockProject
+          ? h(
+              'span',
+              {
+                className: 'aimrule-workspace aimrule-workspace-static',
+                title: project ? `已绑定当前会话工作区：${project}` : '当前会话未绑定工作区',
+              },
+              h(
+                'svg',
+                { width: 13, height: 13, viewBox: '0 0 16 16', 'aria-hidden': true, style: { flex: 'none' } },
+                h('path', {
+                  d: 'M1.5 3.5h4.2l1.2 1.4h7.6v7.6H1.5z',
+                  fill: 'none',
+                  stroke: 'currentColor',
+                  strokeWidth: 1.2,
+                  strokeLinejoin: 'round',
+                }),
+              ),
+              h('span', { className: 'aimrule-workspace-name' }, lockedProjectLabel || (project ? baseName(project) : '当前会话工作区')),
+              h(
+                'svg',
+                { className: 'aimrule-workspace-lock', width: 11, height: 11, viewBox: '0 0 24 24', 'aria-hidden': true },
+                h('rect', { x: 5, y: 10, width: 14, height: 10, rx: 2, fill: 'none', stroke: 'currentColor', strokeWidth: 1.8 }),
+                h('path', { d: 'M8 10V7a4 4 0 0 1 8 0v3', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round' }),
+              ),
+            )
+          : h(ProjectPicker, {
+              useWorkspaces: props.useWorkspaces,
+              useSessions: props.useSessions,
+              value: project,
+              onChange: chooseProject,
+            })
         : null,
       h(
         'div',
@@ -4052,6 +4082,8 @@ export function AimRuleLauncher(props) {
                   sessionId,
                   readCurrentSession: () => sessionId,
                   defaultProject: projectPath,
+                  lockProject: true,
+                  lockedProjectLabel: workspaceLabel,
                 }),
               ),
             ),

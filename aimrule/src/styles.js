@@ -141,6 +141,9 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
 .aimrule-workspace-trigger:hover{color:var(--aim-text)}
 .aimrule-workspace-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:190px}
 .aimrule-workspace-menu{left:0;top:calc(100% + 8px);width:260px}
+.aimrule-workspace-static{display:inline-flex;align-items:center;gap:6px;color:var(--aim-muted);font-size:12px;padding:0 4px;max-width:230px;flex:none;white-space:nowrap}
+.aimrule-workspace-static .aimrule-workspace-name{max-width:190px}
+.aimrule-workspace-lock{flex:none;opacity:.7;color:var(--aim-muted)}
 .aimrule-flow-menu{position:absolute;left:0;top:calc(100% + 8px);width:252px;max-height:min(420px,70vh);overflow:auto;z-index:31;background:var(--aim-layer);border:.5px solid var(--aim-line-strong);border-radius:12px;box-shadow:0 18px 44px rgba(0,0,0,.30);padding:6px;display:flex;flex-direction:column;gap:2px}
 .aimrule-flow-menu.aimrule-more-menu{left:auto;right:0;width:200px;max-height:none}
 .aimrule-flow-mask{position:fixed;inset:0;z-index:30}
