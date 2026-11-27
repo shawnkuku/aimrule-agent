@@ -1,6 +1,6 @@
 {
   "name": "@local/aimrule",
-  "version": "0.9.18",
+  "version": "0.9.19",
   "private": true,
   "type": "module",
   "description": "AimRule — human-in-the-loop business rule elaboration workbench with a nested rule canvas.",

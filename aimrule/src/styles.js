@@ -196,7 +196,9 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
 .aimrule-stage{position:relative;flex:1;min-width:0;overflow:hidden;cursor:default;background-color:var(--aim-base);background-image:radial-gradient(var(--aimrule-grid) 1px, transparent 1px);background-size:24px 24px}
 .aimrule-stage::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(620px 320px at 50% 0%, color-mix(in srgb, var(--aim-accent) 7%, transparent), transparent 72%)}
 .aimrule-stage[data-tool=hand]{cursor:grab}
+.aimrule-stage[data-tool=hand] .aimrule-world,.aimrule-stage[data-tool=hand] .aimrule-world [data-node-id],.aimrule-stage[data-tool=hand] .aimrule-edge-hit{cursor:grab}
 .aimrule-stage[data-panning=true]{cursor:grabbing}
+.aimrule-stage[data-panning=true] .aimrule-world,.aimrule-stage[data-panning=true] .aimrule-world [data-node-id],.aimrule-stage[data-panning=true] .aimrule-edge-hit{cursor:grabbing}
 .aimrule-stage[data-marquee=true]{cursor:crosshair}
 .aimrule-canvas-bar .aimrule-btn[data-active=true]{background:var(--aim-accent-soft);color:var(--aim-accent)}
 .aimrule-canvas-bar .aimrule-btn.aimrule-tool-select{width:auto;padding:0 9px;font-size:11px;gap:4px}
@@ -406,7 +408,8 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
 /* ------------------------------------------------------ composer launcher */
 
 .aimrule-launcher-root{display:contents}
-.aimrule-launch-button{width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:transparent !important;color:var(--dsw-alias-label-secondary);cursor:pointer;padding:0;flex:none;box-shadow:none !important}
+.aimrule-launch-button{width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:transparent !important;color:var(--dsw-alias-label-secondary);cursor:pointer !important;padding:0;flex:none;box-shadow:none !important}
+.aimrule-launch-button svg{pointer-events:none}
 .aimrule-launch-button:hover,.aimrule-launch-button:active,.aimrule-launch-button:focus{background:transparent !important;border-color:transparent !important;box-shadow:none !important}
 .aimrule-launch-button:hover{color:var(--dsw-alias-label-primary)}
 .aimrule-launch-button:focus-visible{outline:2px solid var(--dsw-alias-state-business-primary);outline-offset:2px}

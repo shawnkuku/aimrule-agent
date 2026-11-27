@@ -375,6 +375,13 @@ const worldTransform = () => container.querySelector('.aimrule-world').style.tra
 await React.act(async () => {
   container.querySelector('.aimrule-tool-pan').click()
 })
+const handState =
+  stage.getAttribute('data-tool') === 'hand' &&
+  container.querySelector('.aimrule-tool-pan').getAttribute('data-active') === 'true'
+const handCursor = window.getComputedStyle(stage).cursor
+const handReady = handState && (handCursor === 'grab' || handCursor === '')
+console.log(`${handReady ? 'PASS' : 'FAIL'} hand tool applies a grab cursor to the canvas`)
+if (!handReady) failed += 1
 const beforePan = worldTransform()
 await React.act(async () => {
   stage.dispatchEvent(new window.MouseEvent('mousedown', { bubbles: true, button: 0, clientX: 10, clientY: 10 }))
