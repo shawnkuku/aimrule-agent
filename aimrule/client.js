@@ -625,10 +625,6 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
 .aimrule-error{font-size:12px;color:var(--aim-danger);background:color-mix(in srgb, var(--aim-danger) 10%, transparent);border:.5px solid color-mix(in srgb, var(--aim-danger) 30%, transparent);border-radius:8px;padding:8px 10px;white-space:pre-wrap;max-height:180px;overflow:auto}
 .aimrule-toast{position:absolute;left:50%;top:14px;transform:translateX(-50%);z-index:30;background:var(--aim-raised);border:.5px solid var(--aim-line-strong);box-shadow:0 12px 32px rgba(0,0,0,.24);border-radius:10px;padding:8px 14px;font-size:12px;color:var(--aim-text);max-width:80%}
 .aimrule-toast[data-tone=error]{color:var(--aim-danger)}
-.aimrule-tpl{display:flex;align-items:center;gap:10px;border:.5px solid var(--aim-line);border-radius:12px;padding:9px 11px;background:var(--aim-layer)}
-.aimrule-tpl-info{flex:1;min-width:0}
-.aimrule-tpl-info b{display:block;font-size:12px}
-.aimrule-tpl-info span{font-size:10px;color:var(--aim-muted)}
 .aimrule-badge{flex:none;font-size:10px;line-height:16px;padding:0 6px;border-radius:6px;border:.5px solid var(--aim-line-strong);color:var(--aim-muted)}
 .aimrule-badge[data-status=pass]{color:var(--dsw-alias-state-success-primary);border-color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 45%, transparent);background:color-mix(in srgb, var(--dsw-alias-state-success-primary) 10%, transparent)}
 .aimrule-badge[data-status=fail],.aimrule-badge[data-status=error]{color:var(--aim-danger);border-color:color-mix(in srgb, var(--aim-danger) 45%, transparent);background:color-mix(in srgb, var(--aim-danger) 10%, transparent)}
@@ -1812,9 +1808,9 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
     let bestAt = -Infinity;
     for (const row of rows) {
       if (!row || !row.id || row.subagent || row.blank) continue;
-      const at2 = Number(row.updatedAt) || 0;
-      if (at2 > bestAt) {
-        bestAt = at2;
+      const at = Number(row.updatedAt) || 0;
+      if (at > bestAt) {
+        bestAt = at;
         best = row.id;
       }
     }
@@ -1908,7 +1904,6 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
     const [transcriptLoading, setTranscriptLoading] = useState(false);
     const [selectedMessages, setSelectedMessages] = useState([]);
     const [uploads, setUploads] = useState([]);
-    const [templateName, setTemplateName] = useState("");
     const [testDrafts, setTestDrafts] = useState([]);
     const [aiAppend, setAiAppend] = useState(true);
     const [testDefaults, setTestDefaults] = useState("{}");
@@ -2245,10 +2240,10 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
       setView(next);
     }, []);
     const addNode = useCallback(
-      (type, at2) => {
+      (type, at) => {
         const current2 = docRef.current;
         if (!current2) return;
-        const center = at2 || viewportCenter();
+        const center = at || viewportCenter();
         const node = {
           id: uid("n_"),
           type,
@@ -2293,7 +2288,7 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
       return true;
     }, [notify]);
     const pasteNodes = useCallback(
-      (at2) => {
+      (at) => {
         const current2 = docRef.current;
         const clip = nodeClipboardRef.current;
         if (!current2 || !clip || clip.nodes.length === 0) return false;
@@ -2301,7 +2296,7 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
         for (const node of clip.nodes) idMap.set(node.id, uid("n_"));
         const minX = Math.min(...clip.nodes.map((node) => posOf(node).x));
         const minY = Math.min(...clip.nodes.map((node) => posOf(node).y));
-        const origin = at2 ? { x: at2.x, y: at2.y } : { x: minX + 30, y: minY + 30 };
+        const origin = at ? { x: at.x, y: at.y } : { x: minX + 30, y: minY + 30 };
         const dx = origin.x - minX;
         const dy = origin.y - minY;
         const nodes = clip.nodes.map((node) => ({
@@ -2722,48 +2717,6 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
       },
       [applyDoc, drill]
     );
-    const saveTemplate = useCallback(() => {
-      const current2 = docRef.current;
-      if (!current2 || selection.length === 0) return;
-      const chosen = new Set(selection);
-      const picked = current2.nodes.filter((node) => chosen.has(node.id));
-      if (picked.length === 0) return;
-      const minX = Math.min(...picked.map((node) => posOf(node).x));
-      const minY = Math.min(...picked.map((node) => posOf(node).y));
-      const ids = new Set(picked.map((node) => node.id));
-      const template = {
-        id: uid("tpl_"),
-        name: templateName.trim() || `\u6A21\u677F ${current2.templates.length + 1}`,
-        nodes: picked.map((node) => ({ ...node, parentId: node.parentId && ids.has(node.parentId) ? node.parentId : null, pos: { x: posOf(node).x - minX, y: posOf(node).y - minY } })),
-        edges: current2.edges.filter((edge) => ids.has(edge.source) && ids.has(edge.target)).map((edge) => ({ ...edge })),
-        createdAt: (/* @__PURE__ */ new Date()).toISOString()
-      };
-      applyDoc({ ...current2, templates: [template, ...current2.templates].slice(0, 60) });
-      setTemplateName("");
-      notify(`\u5DF2\u5B58\u4E3A\u6A21\u677F\u300C${template.name}\u300D`);
-    }, [applyDoc, notify, selection, templateName]);
-    const insertTemplate = useCallback(
-      (template) => {
-        const current2 = docRef.current;
-        if (!current2) return;
-        const center = at || viewportCenter();
-        const map = /* @__PURE__ */ new Map();
-        for (const node of template.nodes) map.set(node.id, uid("n_"));
-        const nodes = template.nodes.map((node) => ({
-          ...node,
-          id: map.get(node.id),
-          parentId: node.parentId && map.has(node.parentId) ? map.get(node.parentId) : focusRef.current,
-          pos: { x: Math.round(center.x - 100 + posOf(node).x), y: Math.round(center.y - 60 + posOf(node).y) },
-          data: { ...node.data }
-        }));
-        const edges = template.edges.filter((edge) => map.has(edge.source) && map.has(edge.target)).map((edge) => ({ ...edge, id: uid("e_"), source: map.get(edge.source), target: map.get(edge.target) }));
-        applyDoc({ ...current2, nodes: [...current2.nodes, ...nodes], edges: [...current2.edges, ...edges] });
-        setSelection(nodes.map((node) => node.id));
-        setModal(null);
-        notify(`\u5DF2\u63D2\u5165\u6A21\u677F\u300C${template.name}\u300D`);
-      },
-      [applyDoc, notify, viewportCenter]
-    );
     const addFiles = useCallback((fileList) => {
       const incoming = Array.from(fileList || []);
       if (incoming.length === 0) return;
@@ -3125,7 +3078,7 @@ ${data2.text}`);
       },
       [recentStorageKey]
     );
-    const insertModule = useCallback((entry, at2) => {
+    const insertModule = useCallback((entry, at) => {
       const current2 = docRef.current;
       if (!current2 || !entry || !Array.isArray(entry.nodes) || entry.nodes.length === 0) return;
       const remap = /* @__PURE__ */ new Map();
@@ -4062,14 +4015,6 @@ ${data2.text}`);
                 "button",
                 { className: "aimrule-flow-option", onClick: () => {
                   setMoreMenu(false);
-                  setModal("templates");
-                } },
-                `\u6A21\u677F${current.templates.length ? ` (${current.templates.length})` : ""}`
-              ),
-              h(
-                "button",
-                { className: "aimrule-flow-option", onClick: () => {
-                  setMoreMenu(false);
                   openModules();
                 } },
                 "\u6A21\u5757\u5E93"
@@ -4891,61 +4836,6 @@ ${content}`).join("");
             h("button", { className: "aimrule-btn", onClick: () => download(exportTab, files[exportTab] || "") }, "\u4E0B\u8F7D\u5F53\u524D"),
             h("button", { className: "aimrule-btn", "data-kind": "primary", onClick: () => Object.entries(files).forEach(([name, content]) => download(name, content)) }, "\u4E0B\u8F7D\u5168\u90E8")
           )
-        )
-      ) : null,
-      modal === "templates" ? h(
-        "div",
-        { className: "aimrule-overlay", onMouseDown: (event) => {
-          if (event.target === event.currentTarget) setModal(null);
-        } },
-        h(
-          "div",
-          { className: "aimrule-modal" },
-          h(
-            "div",
-            { className: "aimrule-modal-head" },
-            h("h2", null, "\u6A21\u677F\u5E93"),
-            h("button", { className: "aimrule-btn", "data-kind": "ghost", onClick: () => setModal(null) }, "\u2715")
-          ),
-          h(
-            "div",
-            { className: "aimrule-modal-body" },
-            h(
-              "div",
-              { style: { display: "flex", gap: 8 } },
-              h("input", {
-                className: "aimrule-input",
-                value: templateName,
-                placeholder: "\u4E3A\u5F53\u524D\u9009\u4E2D\u7684\u8282\u70B9\u547D\u540D\u6A21\u677F",
-                onChange: (event) => setTemplateName(event.target.value)
-              }),
-              h("button", { className: "aimrule-btn", onClick: saveTemplate, disabled: selection.length === 0 }, "\u5B58\u4E3A\u6A21\u677F")
-            ),
-            current.templates.length === 0 ? h("p", { className: "aimrule-hint" }, "\u8FD8\u6CA1\u6709\u6A21\u677F\u3002\u5728\u753B\u5E03\u4E0A\u6846\u9009\u4E00\u7EC4\u8282\u70B9\uFF0C\u53D6\u4E2A\u540D\u5B57\u4FDD\u5B58\uFF1B\u4E0B\u6B21\u53EF\u76F4\u63A5\u63D2\u5165\u590D\u7528\u3002") : null,
-            ...current.templates.map(
-              (template) => h(
-                "div",
-                { key: template.id, className: "aimrule-tpl" },
-                h(
-                  "div",
-                  { className: "aimrule-tpl-info" },
-                  h("b", null, template.name),
-                  h("span", null, `${template.nodes.length} \u4E2A\u8282\u70B9 \xB7 ${template.edges.length} \u6761\u8FDE\u7EBF`)
-                ),
-                h("button", { className: "aimrule-btn", onClick: () => insertTemplate(template) }, "\u63D2\u5165"),
-                h(
-                  "button",
-                  {
-                    className: "aimrule-btn",
-                    style: { color: "var(--dsw-alias-state-error-primary)" },
-                    onClick: () => mutate((state) => ({ ...state, templates: state.templates.filter((item) => item.id !== template.id) }))
-                  },
-                  "\u5220\u9664"
-                )
-              )
-            )
-          ),
-          h("div", { className: "aimrule-modal-foot" }, h("button", { className: "aimrule-btn", onClick: () => setModal(null) }, "\u5173\u95ED"))
         )
       ) : null,
       modal === "tests" ? h(

@@ -151,7 +151,6 @@ export default function AimRulePage(props) {
   const [transcriptLoading, setTranscriptLoading] = useState(false)
   const [selectedMessages, setSelectedMessages] = useState([])
   const [uploads, setUploads] = useState([])
-  const [templateName, setTemplateName] = useState('')
   const [testDrafts, setTestDrafts] = useState([])
   const [aiAppend, setAiAppend] = useState(true)
   const [testDefaults, setTestDefaults] = useState('{}')
@@ -1045,52 +1044,6 @@ export default function AimRulePage(props) {
       if (focusRef.current === moduleId) drill(parent)
     },
     [applyDoc, drill],
-  )
-
-  const saveTemplate = useCallback(() => {
-    const current = docRef.current
-    if (!current || selection.length === 0) return
-    const chosen = new Set(selection)
-    const picked = current.nodes.filter((node) => chosen.has(node.id))
-    if (picked.length === 0) return
-    const minX = Math.min(...picked.map((node) => posOf(node).x))
-    const minY = Math.min(...picked.map((node) => posOf(node).y))
-    const ids = new Set(picked.map((node) => node.id))
-    const template = {
-      id: uid('tpl_'),
-      name: templateName.trim() || `模板 ${current.templates.length + 1}`,
-      nodes: picked.map((node) => ({ ...node, parentId: node.parentId && ids.has(node.parentId) ? node.parentId : null, pos: { x: posOf(node).x - minX, y: posOf(node).y - minY } })),
-      edges: current.edges.filter((edge) => ids.has(edge.source) && ids.has(edge.target)).map((edge) => ({ ...edge })),
-      createdAt: new Date().toISOString(),
-    }
-    applyDoc({ ...current, templates: [template, ...current.templates].slice(0, 60) })
-    setTemplateName('')
-    notify(`已存为模板「${template.name}」`)
-  }, [applyDoc, notify, selection, templateName])
-
-  const insertTemplate = useCallback(
-    (template) => {
-      const current = docRef.current
-      if (!current) return
-      const center = at || viewportCenter()
-      const map = new Map()
-      for (const node of template.nodes) map.set(node.id, uid('n_'))
-      const nodes = template.nodes.map((node) => ({
-        ...node,
-        id: map.get(node.id),
-        parentId: node.parentId && map.has(node.parentId) ? map.get(node.parentId) : focusRef.current,
-        pos: { x: Math.round(center.x - 100 + posOf(node).x), y: Math.round(center.y - 60 + posOf(node).y) },
-        data: { ...node.data },
-      }))
-      const edges = template.edges
-        .filter((edge) => map.has(edge.source) && map.has(edge.target))
-        .map((edge) => ({ ...edge, id: uid('e_'), source: map.get(edge.source), target: map.get(edge.target) }))
-      applyDoc({ ...current, nodes: [...current.nodes, ...nodes], edges: [...current.edges, ...edges] })
-      setSelection(nodes.map((node) => node.id))
-      setModal(null)
-      notify(`已插入模板「${template.name}」`)
-    },
-    [applyDoc, notify, viewportCenter],
   )
 
   /* ------------------------------------------------------------------- ai */
@@ -2497,11 +2450,6 @@ export default function AimRulePage(props) {
                 { className: 'aimrule-flow-menu aimrule-more-menu' },
                 h(
                   'button',
-                  { className: 'aimrule-flow-option', onClick: () => { setMoreMenu(false); setModal('templates') } },
-                  `模板${current.templates.length ? ` (${current.templates.length})` : ''}`,
-                ),
-                h(
-                  'button',
                   { className: 'aimrule-flow-option', onClick: () => { setMoreMenu(false); openModules() } },
                   '模块库',
                 ),
@@ -3388,63 +3336,6 @@ export default function AimRulePage(props) {
               h('button', { className: 'aimrule-btn', onClick: () => download(exportTab, files[exportTab] || '') }, '下载当前'),
               h('button', { className: 'aimrule-btn', 'data-kind': 'primary', onClick: () => Object.entries(files).forEach(([name, content]) => download(name, content)) }, '下载全部'),
             ),
-          ),
-        )
-      : null,
-    modal === 'templates'
-      ? h(
-          'div',
-          { className: 'aimrule-overlay', onMouseDown: (event) => { if (event.target === event.currentTarget) setModal(null) } },
-          h(
-            'div',
-            { className: 'aimrule-modal' },
-            h(
-              'div',
-              { className: 'aimrule-modal-head' },
-              h('h2', null, '模板库'),
-              h('button', { className: 'aimrule-btn', 'data-kind': 'ghost', onClick: () => setModal(null) }, '✕'),
-            ),
-            h(
-              'div',
-              { className: 'aimrule-modal-body' },
-              h(
-                'div',
-                { style: { display: 'flex', gap: 8 } },
-                h('input', {
-                  className: 'aimrule-input',
-                  value: templateName,
-                  placeholder: '为当前选中的节点命名模板',
-                  onChange: (event) => setTemplateName(event.target.value),
-                }),
-                h('button', { className: 'aimrule-btn', onClick: saveTemplate, disabled: selection.length === 0 }, '存为模板'),
-              ),
-              current.templates.length === 0
-                ? h('p', { className: 'aimrule-hint' }, '还没有模板。在画布上框选一组节点，取个名字保存；下次可直接插入复用。')
-                : null,
-              ...current.templates.map((template) =>
-                h(
-                  'div',
-                  { key: template.id, className: 'aimrule-tpl' },
-                  h(
-                    'div',
-                    { className: 'aimrule-tpl-info' },
-                    h('b', null, template.name),
-                    h('span', null, `${template.nodes.length} 个节点 · ${template.edges.length} 条连线`),
-                  ),
-                  h('button', { className: 'aimrule-btn', onClick: () => insertTemplate(template) }, '插入'),
-                  h(
-                    'button',
-                    {
-                      className: 'aimrule-btn',
-                      style: { color: 'var(--dsw-alias-state-error-primary)' },
-                      onClick: () => mutate((state) => ({ ...state, templates: state.templates.filter((item) => item.id !== template.id) })),
-                    },
-                    '删除',
-                  ),
-                ),
-              ),
-            ),
-            h('div', { className: 'aimrule-modal-foot' }, h('button', { className: 'aimrule-btn', onClick: () => setModal(null) }, '关闭')),
           ),
         )
       : null,

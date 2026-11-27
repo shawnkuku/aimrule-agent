@@ -376,10 +376,6 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
 .aimrule-error{font-size:12px;color:var(--aim-danger);background:color-mix(in srgb, var(--aim-danger) 10%, transparent);border:.5px solid color-mix(in srgb, var(--aim-danger) 30%, transparent);border-radius:8px;padding:8px 10px;white-space:pre-wrap;max-height:180px;overflow:auto}
 .aimrule-toast{position:absolute;left:50%;top:14px;transform:translateX(-50%);z-index:30;background:var(--aim-raised);border:.5px solid var(--aim-line-strong);box-shadow:0 12px 32px rgba(0,0,0,.24);border-radius:10px;padding:8px 14px;font-size:12px;color:var(--aim-text);max-width:80%}
 .aimrule-toast[data-tone=error]{color:var(--aim-danger)}
-.aimrule-tpl{display:flex;align-items:center;gap:10px;border:.5px solid var(--aim-line);border-radius:12px;padding:9px 11px;background:var(--aim-layer)}
-.aimrule-tpl-info{flex:1;min-width:0}
-.aimrule-tpl-info b{display:block;font-size:12px}
-.aimrule-tpl-info span{font-size:10px;color:var(--aim-muted)}
 .aimrule-badge{flex:none;font-size:10px;line-height:16px;padding:0 6px;border-radius:6px;border:.5px solid var(--aim-line-strong);color:var(--aim-muted)}
 .aimrule-badge[data-status=pass]{color:var(--dsw-alias-state-success-primary);border-color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 45%, transparent);background:color-mix(in srgb, var(--dsw-alias-state-success-primary) 10%, transparent)}
 .aimrule-badge[data-status=fail],.aimrule-badge[data-status=error]{color:var(--aim-danger);border-color:color-mix(in srgb, var(--aim-danger) 45%, transparent);background:color-mix(in srgb, var(--aim-danger) 10%, transparent)}
