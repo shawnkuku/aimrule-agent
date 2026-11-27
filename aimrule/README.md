@@ -98,8 +98,8 @@ node test/evaluate-check.mjs
 From the repository root:
 
 ```bash
-node release.mjs patch         # bump, build, test, pack, commit, tag
-node release.mjs patch --push  # also push the commit and tag
+node scripts/release.mjs patch  # bump, build, test, pack, commit, tag
+node scripts/release.mjs patch --push  # also push the commit and tag
 ```
 
 The UI uses the Harness theme tokens, so it follows light and dark mode.
@@ -190,8 +190,8 @@ node test/evaluate-check.mjs
 在仓库根目录发布：
 
 ```bash
-node release.mjs patch         # 升版本、构建、测试、打包、提交、打 tag
-node release.mjs patch --push  # 同时推送到远端
+node scripts/release.mjs patch  # 升版本、构建、测试、打包、提交、打 tag
+node scripts/release.mjs patch --push  # 同时推送到远端
 ```
 
 界面使用 Harness 的主题 token，自动跟随亮色/暗色主题。

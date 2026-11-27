@@ -2,10 +2,10 @@
 /**
  * AimRule release: bump version, build, test, pack, commit, tag.
  *
- *   node release.mjs patch
- *   node release.mjs minor
- *   node release.mjs 0.10.0
- *   node release.mjs patch --push
+ *   node scripts/release.mjs patch
+ *   node scripts/release.mjs minor
+ *   node scripts/release.mjs 0.10.0
+ *   node scripts/release.mjs patch --push
  *
  * Flags: --skip-tests, --no-commit, --push
  */
@@ -14,7 +14,8 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const root = dirname(fileURLToPath(import.meta.url))
+const here = dirname(fileURLToPath(import.meta.url))
+const root = join(here, '..')
 const plugin = join(root, 'aimrule')
 const args = process.argv.slice(2)
 const flags = new Set(args.filter((arg) => arg.startsWith('--')))
