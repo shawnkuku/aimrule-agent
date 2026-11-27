@@ -31,8 +31,10 @@ AimRule 是 DeepSeek Harness 的插件：把政策条文、对话记录和源码
 ## Quick start / 快速开始
 
 1. Install `dist/aimrule-agent-<version>.tgz` through DSH's plugin manager, or
-   enable the `aimrule` bundle in your profile.
-   / 把 tarball 交给 DSH 插件管理器，或在 profile 里启用 `aimrule`。
+   enable the `aimrule` bundle in your profile. Published package:
+   `npm install @aimrule/agent`.
+   / 把 tarball 交给 DSH 插件管理器，或在 profile 里启用 `aimrule`；发布后可直接
+   `npm install @aimrule/agent`。
 2. Open AimRule from the sidebar, or click the AimRule icon in the chat
    composer. / 从侧栏打开，或点聊天输入框里的 AimRule 图标。
 3. Read the [full manual](aimrule/README.md) for the canvas, modules, tests,

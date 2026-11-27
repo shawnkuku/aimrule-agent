@@ -1,9 +1,27 @@
 {
   "name": "@aimrule/agent",
   "version": "1.0.0",
-  "private": true,
   "type": "module",
   "description": "AimRule — human-in-the-loop business rule elaboration workbench with a nested rule canvas.",
+  "license": "AGPL-3.0-or-later",
+  "author": "AimRule contributors",
+  "homepage": "https://github.com/shawnkuku/aimrule-agent/tree/main/aimrule#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shawnkuku/aimrule-agent.git",
+    "directory": "aimrule"
+  },
+  "bugs": {
+    "url": "https://github.com/shawnkuku/aimrule-agent/issues"
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "business-rules",
+    "flowchart",
+    "rule-engine",
+    "plugin"
+  ],
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",
@@ -23,6 +41,10 @@
     "NOTICE",
     "TRADEMARK.md"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
@@ -35,7 +57,5 @@
         "@deepseek-ai/dsh-client-ui-conversation"
       ]
     }
-  },
-  "license": "AGPL-3.0-or-later",
-  "author": "AimRule contributors"
+  }
 }

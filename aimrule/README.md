@@ -82,6 +82,7 @@ The UI labels are Chinese; this guide keeps them so they are easy to match.
 
 - Install the release tarball (`dist/aimrule-agent-<version>.tgz`) with the DSH
   plugin manager, or enable the `aimrule` bundle in your profile, then refresh.
+- Published package: `npm install @aimrule/agent` (after the first npm release).
 - LibreOffice is optional and only needed for PDF / legacy Office import.
   Scanned PDFs and images need OCR.
 
@@ -174,6 +175,7 @@ The UI uses the Harness theme tokens, so it follows light and dark mode.
 
 - 把发布 tarball（`dist/aimrule-agent-<version>.tgz`）交给 DSH 插件管理器，
   或在 profile 里启用 `aimrule` bundle，然后刷新页面。
+- 发布到 npm 后可直接 `npm install @aimrule/agent`。
 - LibreOffice 是可选的，只在导入 PDF / 旧版 Office 时需要。
   扫描版 PDF 和图片需要 OCR。
 
