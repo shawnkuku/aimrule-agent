@@ -930,7 +930,7 @@ export function apply(ctx, config = {}) {
         const project = url.searchParams.get('project') || ''
         const flow = url.searchParams.get('flow') || ''
         if (path === 'health' && req.method === 'GET') {
-          sendJson(res, 200, { ok: true, name: 'aimrule', version: '0.9.17', dir: globalDir })
+          sendJson(res, 200, { ok: true, name: 'aimrule', version: '0.9.18', dir: globalDir })
           return
         }
         if (path === 'state' && req.method === 'GET') {

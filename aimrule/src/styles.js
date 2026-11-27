@@ -406,9 +406,10 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
 /* ------------------------------------------------------ composer launcher */
 
 .aimrule-launcher-root{display:contents}
-.aimrule-launch-button{width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:transparent;color:var(--dsw-alias-label-secondary);cursor:pointer;padding:0;flex:none}
-.aimrule-launch-button:hover{background:var(--dsw-alias-interactive-bg-hover-solid,var(--dsw-alias-interactive-bg-hover));color:var(--dsw-alias-label-primary)}
-.aimrule-launch-button:focus-visible{outline:2px solid var(--dsw-alias-state-business-primary);outline-offset:1px}
+.aimrule-launch-button{width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:transparent !important;color:var(--dsw-alias-label-secondary);cursor:pointer;padding:0;flex:none;box-shadow:none !important}
+.aimrule-launch-button:hover,.aimrule-launch-button:active,.aimrule-launch-button:focus{background:transparent !important;border-color:transparent !important;box-shadow:none !important}
+.aimrule-launch-button:hover{color:var(--dsw-alias-label-primary)}
+.aimrule-launch-button:focus-visible{outline:2px solid var(--dsw-alias-state-business-primary);outline-offset:2px}
 .aimrule-launcher-mask{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,.46);backdrop-filter:blur(3px)}
 .aimrule-launcher{width:min(1240px,94vw);height:min(900px,88vh);display:flex;flex-direction:column;overflow:hidden;background:var(--dsw-alias-bg-base);border:.5px solid var(--dsw-alias-border-l3);border-radius:16px;box-shadow:0 30px 90px rgba(0,0,0,.46)}
 .aimrule-launcher-head{flex:none;height:44px;display:flex;align-items:center;gap:10px;padding:0 8px 0 14px;border-bottom:.5px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-1)}
