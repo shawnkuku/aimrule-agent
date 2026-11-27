@@ -87,6 +87,18 @@ rename, delete, create a canvas, or export the current one.
   the JSON backup and keeps a `.md.corrupt` copy.
 - Without a project, the Host's global workspace is used.
 
+### Context isolation
+
+- Each workspace has its own `.aimrule/flows` and module catalog. Flow ids,
+  cached documents, and recently used modules are keyed by workspace path.
+- The chat launcher is locked to the current session workspace and cannot
+  switch workspaces.
+- Composer attachments, chat selections, open-point notes, and errors reset
+  when the flow, workspace, or session changes.
+- Agent tools resolve the workspace of the calling session.
+- Different workspaces are isolated. Multiple sessions inside the same
+  workspace intentionally share that workspace's flows.
+
 ### Install
 
 - Install the release tarball (`dist/aimrule-dsh-plugin-flow-<version>.tgz`) with the DSH
@@ -184,6 +196,16 @@ The UI uses the Harness theme tokens, so it follows light and dark mode.
 - 旧的 `<id>.json` 会迁移成 `<id>.json.bak`；`.md` 解析失败时回退到 JSON
   备份，并保留 `.md.corrupt`。
 - 不传项目时，用 Host 的全局工作区。
+
+### 工作区隔离
+
+- 每个工作区有独立的 `.aimrule/flows` 和模块目录；流程图 id、文档缓存、最近使用
+  模块都按工作区路径区分。
+- 聊天弹层锁定当前会话的工作区，不能切换工作区。
+- 切换流程图、工作区或会话时，输入框附件、对话勾选、待确认点提示和错误提示都会
+  清空，不会带到新上下文。
+- Agent 工具按调用会话所在工作区解析。
+- 不同工作区完全隔离；同一工作区内的多个会话会共享该工作区的流程图。
 
 ### 安装
 

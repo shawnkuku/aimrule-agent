@@ -1269,7 +1269,25 @@ export default function AimRulePage(props) {
     setGenForm({ text: '' })
     setComposerMenu(false)
     setComposerPicker(null)
+    setSelectedMessages([])
+    setUploads([])
+    setNotes([])
+    setError('')
   }, [flowId])
+
+  useEffect(() => {
+    const next = props && typeof props.sessionId === 'string' ? props.sessionId : ''
+    if (!next || next === sessionId) return
+    setSessionId(next)
+    setSelectedMessages([])
+    setTranscriptItems([])
+    setUploads([])
+    setNotes([])
+    setRefNodes([])
+    setRefPaths([])
+    setGenForm({ text: '' })
+    setError('')
+  }, [props.sessionId, sessionId])
 
   const createFlow = useCallback(async () => {
     if (busy) return
