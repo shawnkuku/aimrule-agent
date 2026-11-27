@@ -424,7 +424,7 @@ body:not([data-ds-dark-theme]) .aimrule-root{--aim-muted:#6b7075}
 .aimrule-launcher-close{width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:8px;background:transparent;color:var(--dsw-alias-label-secondary);font-size:13px;cursor:pointer;padding:0}
 .aimrule-launcher-close:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}
 .aimrule-launcher-body{flex:1;min-height:0;display:flex;overflow:hidden}
-.aimrule-launcher-body > .aimrule-root{flex:1;min-width:0;min-height:0}
+.aimrule-launcher-body > .aimrule-root{flex:1;min-width:0;min-height:0;--dsh-frame-top-clearance:0px}
 @media (max-width:720px){.aimrule-launcher-mask{padding:8px}.aimrule-launcher{width:96vw;height:94vh}}
 
 .aimrule-btn:focus-visible,.aimrule-flow-option:focus-visible,.aimrule-tree-row:focus-visible,.aimrule-crumb:focus-visible,.aimrule-module-pick:focus-visible,.aimrule-module-add:focus-visible{outline:2px solid var(--aim-accent);outline-offset:1px}
