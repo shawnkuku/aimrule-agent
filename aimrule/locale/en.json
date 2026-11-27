@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "AimRule",
+    "description": "A human-in-the-loop workbench that turns policy text, chat logs, and source code into an editable nested rule canvas and exportable engineering context."
+  }
+}
